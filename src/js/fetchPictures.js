@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const fetchPictures = async query => {
+export const fetchPictures = async (query, page) => {
   const axiosParams = {
     method: 'get',
     baseURL: 'https://pixabay.com/api/',
@@ -10,11 +10,15 @@ export const fetchPictures = async query => {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
+      per_page: 40,
+      //TODO ogarnąć przekazanie nr strony do funkcji
+      page: `${page}`,
     },
   };
 
   try {
     const response = await axios(axiosParams);
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error(error);
