@@ -24,12 +24,11 @@ searchBox.addEventListener('submit', apiQuery);
 
 const checkFetch = pictures => {
   if (!pictures.total) {
-    Notiflix.Notify.failure(
+    return Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
-    return (searchQuery.value = '');
   }
-  return renderGallery(pictures.hits);
+  renderGallery(pictures.hits);
 };
 
 const renderGallery = pictures => {
