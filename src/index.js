@@ -3,33 +3,36 @@ import { fetchPictures } from './js/fetchPictures';
 import { lightbox } from './js/gallery';
 
 const searchBox = document.querySelector('.search-form');
-const loadMoreBtn = document.querySelector('.load-more');
 const { searchQuery } = searchBox.elements;
+const gallery = document.querySelector('.gallery');
+const loadMoreBtn = document.querySelector('.load-more');
 
 loadMoreBtn.style.display = 'none';
 
-const searchInput = e => {
+const apiQuery = e => {
   e.preventDefault();
-  const searchValue = searchQuery.value;
-  console.log(
-    fetchPictures(searchValue).then(pictures => console.log(pictures))
+  if (searchQuery.value === '') {
+    return Notiflix.Notify.warning('Please tell us what we are looking for :)');
+  }
+  gallery.innerHTML = ''; //clear gallery after new fetch
+  loadMoreBtn.style.display = 'none'; //hide button after new fetch
+  fetchPictures(searchQuery.value, currentPage).then(pictures =>
+    checkFetch(pictures)
   );
-  fetchPictures(searchValue).then(pictures => checkFetch(pictures));
 };
-
-searchBox.addEventListener('submit', searchInput);
+searchBox.addEventListener('submit', apiQuery);
 
 const checkFetch = pictures => {
   if (!pictures.total) {
     Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
+    return (searchQuery.value = '');
   }
   return renderGallery(pictures.hits);
 };
 
 const renderGallery = pictures => {
-  const gallery = document.querySelector('.gallery');
   const markup = pictures
     .map(
       ({
@@ -64,14 +67,16 @@ const renderGallery = pictures => {
     )
     .join('');
 
-  gallery.innerHTML = markup;
+  gallery.insertAdjacentHTML('beforeend', markup);
   loadMoreBtn.style.display = 'block';
   lightbox.refresh();
 };
 
-// let currentPage = 1;
-// const showCurrentPage = () => {
-//   currentPage++;
-//   fetchPictures(currentPage);
-// };
-// loadMoreBtn.addEventListener('click', showCurrentPage);
+let currentPage = 1;
+const changeCurrentPage = () => {
+  currentPage++;
+  fetchPictures(searchQuery.value, currentPage).then(pictures =>
+    checkFetch(pictures)
+  );
+};
+loadMoreBtn.addEventListener('click', changeCurrentPage);

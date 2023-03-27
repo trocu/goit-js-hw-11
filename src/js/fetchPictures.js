@@ -11,14 +11,13 @@ export const fetchPictures = async (query, page) => {
       orientation: 'horizontal',
       safesearch: true,
       per_page: 40,
-      //TODO ogarnąć przekazanie nr strony do funkcji
       page: `${page}`,
     },
   };
 
   try {
     const response = await axios(axiosParams);
-    console.log(response);
+    // console.log(response);
     return response.data;
   } catch (error) {
     console.error(error);
