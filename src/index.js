@@ -7,18 +7,23 @@ const { searchQuery } = searchBox.elements;
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
 
+let currentPage = 1;
+let maxHits = 0;
 loadMoreBtn.style.display = 'none';
 
 const apiQuery = e => {
   e.preventDefault();
-  if (searchQuery.value === '') {
-    return Notiflix.Notify.warning('Please tell us what we are looking for :)');
+  query = searchQuery.value.trim();
+  if (query === '') {
+    return Notiflix.Notify.warning(`Please tell us what you are looking for!`);
   }
-  gallery.innerHTML = ''; //clear gallery after new fetch
-  loadMoreBtn.style.display = 'none'; //hide button after new fetch
-  fetchPictures(searchQuery.value, currentPage).then(pictures =>
-    checkFetch(pictures)
-  );
+  currentPage = 1;
+  gallery.innerHTML = ''; //Clear gallery after new fetch
+  loadMoreBtn.style.display = 'none'; //Hide button after new fetch
+  fetchPictures(query, currentPage).then(pictures => {
+    maxHits += pictures.hits.length;
+    checkFetch(pictures);
+  });
 };
 searchBox.addEventListener('submit', apiQuery);
 
@@ -71,11 +76,20 @@ const renderGallery = pictures => {
   lightbox.refresh();
 };
 
-let currentPage = 1;
 const changeCurrentPage = () => {
   currentPage++;
-  fetchPictures(searchQuery.value, currentPage).then(pictures =>
-    checkFetch(pictures)
-  );
+  fetchPictures(query, currentPage).then(pictures => {
+    maxHits += pictures.hits.length;
+    console.log(maxHits);
+    console.log(currentPage);
+    if (maxHits >= pictures.totalHits) {
+      return Notiflix.Notify.warning(
+        `We're sorry, but you've reached the end of search results.`
+      );
+    }
+    checkFetch(pictures);
+  });
 };
 loadMoreBtn.addEventListener('click', changeCurrentPage);
+
+//TODO Czy da sie ustawic dynamiczny per_page?
