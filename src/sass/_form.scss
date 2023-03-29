@@ -1,16 +1,42 @@
 .search-form {
+  position: fixed;
+  width: 100vw;
   display: flex;
-  gap: 10px;
   justify-content: center;
   padding: 20px;
   background: #273043;
+  z-index: 1;
 }
+
 .search-form input {
-  padding: 10px 0 10px 10px;
+  width: 100%;
+  max-width: 350px;
+  padding: 10px 50px 10px 10px;
   box-sizing: border-box;
-  border: 1px solid rgba(145, 151, 174, 0.3);
+  border: 1px solid rgba(145 151 174 / 0.3);
   background: none;
   border-radius: 4px;
   color: white;
   outline: none;
+  letter-spacing: 0.06em;
+}
+
+.search-form button {
+  position: relative;
+  left: -40px;
+  background: #f02d3a;
+  border: none;
+  border-radius: 10% / 0 11% 11% 0;
+  cursor: pointer;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  &:hover {
+    background: #dd0426;
+  }
+}
+.search-form svg {
+  padding-top: 3px;
+  width: 40px;
+  height: 25px;
+  fill: white;
+  background: none;
 }

@@ -7,34 +7,38 @@ const { searchQuery } = searchBox.elements;
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
 
-let currentPage = 1;
-let maxHits = 0;
+let currentPage; //Current page counter
+let perPage = 40; //Page image limit
+let maxHits; //Maximum images to fetch counter
+
 loadMoreBtn.style.display = 'none';
 
+//Main body of the application, fetching new images
 const apiQuery = e => {
   e.preventDefault();
   query = searchQuery.value.trim();
   if (query === '') {
     return Notiflix.Notify.warning(`Please tell us what you are looking for!`);
   }
-  currentPage = 1;
-  gallery.innerHTML = ''; //Clear gallery after new fetch
-  loadMoreBtn.style.display = 'none'; //Hide button after new fetch
-  fetchPictures(query, currentPage).then(pictures => {
-    maxHits += pictures.hits.length;
-    checkFetch(pictures);
+  currentPage = 1; //Start page counter
+  maxHits = 0; //Reset counter after new query
+  gallery.innerHTML = ''; //Clear gallery after query
+  loadMoreBtn.style.display = 'none'; //Hide button after query
+
+  fetchPictures(query, perPage, currentPage).then(pictures => {
+    maxHits += pictures.hits.length; //Increments the counter with a new query
+    if (!pictures.total) {
+      return Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    } else if (!pictures.totalHits) {
+      return renderGallery(pictures.hits);
+    }
+    Notiflix.Notify.success(`Hooray! We found ${pictures.totalHits} images.`);
+    renderGallery(pictures.hits);
   });
 };
 searchBox.addEventListener('submit', apiQuery);
-
-const checkFetch = pictures => {
-  if (!pictures.total) {
-    return Notiflix.Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
-  }
-  renderGallery(pictures.hits);
-};
 
 const renderGallery = pictures => {
   const markup = pictures
@@ -54,16 +58,16 @@ const renderGallery = pictures => {
             </a>
             <div class="info">
                 <p class="info__item">
-                <b>Likes</b>${likes}
+                <b>Likes</b><span class="info__item-lighter">${likes}</span>
                 </p>
                 <p class="info__item">
-                <b>Views</b>${views}
+                <b>Views</b><span class="info__item-lighter">${views}</span>
                 </p>
                 <p class="info__item">
-                <b>Comments</b>${comments}
+                <b>Comments</b><span class="info__item-lighter">${comments}</span>
                 </p>
                 <p class="info__item">
-                <b>Downloads</b>${downloads}
+                <b>Downloads</b><span class="info__item-lighter">${downloads}</span>
                 </p>
             </div>
         </div>`;
@@ -78,7 +82,7 @@ const renderGallery = pictures => {
 
 const changeCurrentPage = () => {
   currentPage++;
-  fetchPictures(query, currentPage).then(pictures => {
+  fetchPictures(query, perPage, currentPage).then(pictures => {
     maxHits += pictures.hits.length;
     console.log(maxHits);
     console.log(currentPage);
@@ -87,9 +91,7 @@ const changeCurrentPage = () => {
         `We're sorry, but you've reached the end of search results.`
       );
     }
-    checkFetch(pictures);
+    renderGallery(pictures.hits);
   });
 };
 loadMoreBtn.addEventListener('click', changeCurrentPage);
-
-//TODO Czy da sie ustawic dynamiczny per_page?

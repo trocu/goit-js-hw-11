@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const fetchPictures = async (query, page) => {
+export const fetchPictures = async (query, perPage, page) => {
   const axiosParams = {
     method: 'get',
     baseURL: 'https://pixabay.com/api/',
@@ -10,7 +10,7 @@ export const fetchPictures = async (query, page) => {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
-      per_page: 40,
+      per_page: `${perPage}`,
       page: `${page}`,
     },
   };
