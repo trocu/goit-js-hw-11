@@ -99,6 +99,15 @@ const changeCurrentPage = () => {
       );
     }
     renderGallery(pictures.hits);
+
+    //Adds smooth scrolling
+    const { height: cardHeight } = document
+      .querySelector('.gallery')
+      .firstElementChild.getBoundingClientRect();
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
   });
 };
 loadMoreBtn.addEventListener('click', changeCurrentPage);
