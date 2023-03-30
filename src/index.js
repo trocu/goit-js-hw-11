@@ -10,6 +10,7 @@ const loadMoreBtn = document.querySelector('.load-more');
 let currentPage; //Current page counter
 let perPage = 40; //Page image limit
 let maxHits; //Maximum images to fetch counter
+let query;
 
 loadMoreBtn.style.display = 'none';
 
