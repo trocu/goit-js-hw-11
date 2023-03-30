@@ -1,6 +1,6 @@
 import Notiflix from 'notiflix';
-import { fetchPictures } from './js/fetchPictures';
 import { lightbox } from './js/gallery';
+import restApi from './js/fetchPictures';
 
 const searchBox = document.querySelector('.search-form');
 const { searchQuery } = searchBox.elements;
@@ -25,9 +25,11 @@ const apiQuery = e => {
   maxHits = 0; //Reset counter after new query
   gallery.innerHTML = ''; //Clear gallery after query
   loadMoreBtn.style.display = 'none'; //Hide button after query
+  loadMoreBtn.classList.remove(`is-inactive`);
+  loadMoreBtn.classList.add(`load-more`);
 
-  fetchPictures(query, perPage, currentPage).then(pictures => {
-    maxHits += pictures.hits.length; //Increments the counter with a new query
+  restApi.fetchPictures(query, perPage, currentPage).then(pictures => {
+    maxHits += pictures.hits.length; //Increases the counter with a new query
     if (!pictures.total) {
       return Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
@@ -77,17 +79,21 @@ const renderGallery = pictures => {
     .join('');
 
   gallery.insertAdjacentHTML('beforeend', markup);
+  loadMoreBtn.classList.remove(`is-inactive`);
+  loadMoreBtn.classList.add(`load-more`);
   loadMoreBtn.style.display = 'block';
   lightbox.refresh();
 };
 
+//Fetches additional images after clicking the 'load more' button
 const changeCurrentPage = () => {
-  currentPage++;
-  fetchPictures(query, perPage, currentPage).then(pictures => {
+  currentPage++; //Increses page counter
+  restApi.fetchPictures(query, perPage, currentPage).then(pictures => {
     maxHits += pictures.hits.length;
-    console.log(maxHits);
-    console.log(currentPage);
     if (maxHits >= pictures.totalHits) {
+      // loadMoreBtn.style.display = 'none';
+      loadMoreBtn.classList.remove(`load-more`);
+      loadMoreBtn.classList.add(`is-inactive`);
       return Notiflix.Notify.warning(
         `We're sorry, but you've reached the end of search results.`
       );

@@ -4,19 +4,21 @@
   display: flex;
   justify-content: center;
   padding: 20px;
-  background: #273043;
+  background: white;
+  box-shadow: 0px 4px 4px rgba(0 0 0 / 0.1);
   z-index: 1;
 }
 
 .search-form input {
   width: 100%;
-  max-width: 350px;
-  padding: 10px 50px 10px 10px;
+  max-width: 400px;
+  padding: 10px 70px 10px 10px;
   box-sizing: border-box;
-  border: 1px solid rgba(145 151 174 / 0.3);
-  background: none;
+  border: none;
+  background: #eef2f3;
   border-radius: 4px;
-  color: white;
+  font-size: 14px;
+  color: #273043;
   outline: none;
   letter-spacing: 0.06em;
 }
@@ -28,7 +30,7 @@
   border: none;
   border-radius: 10% / 0 11% 11% 0;
   cursor: pointer;
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color $animation-duration $timing-function;
   &:hover {
     background: #dd0426;
   }
