@@ -91,7 +91,6 @@ const changeCurrentPage = () => {
   restApi.fetchPictures(query, perPage, currentPage).then(pictures => {
     maxHits += pictures.hits.length;
     if (maxHits >= pictures.totalHits) {
-      // loadMoreBtn.style.display = 'none';
       loadMoreBtn.classList.remove(`load-more`);
       loadMoreBtn.classList.add(`is-inactive`);
       return Notiflix.Notify.warning(
