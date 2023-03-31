@@ -34,8 +34,6 @@ const apiQuery = e => {
       return Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
-    } else if (!pictures.totalHits) {
-      return renderGallery(pictures.hits);
     }
     Notiflix.Notify.success(`Hooray! We found ${pictures.totalHits} images.`);
     renderGallery(pictures.hits);
