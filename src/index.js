@@ -77,8 +77,6 @@ const renderGallery = pictures => {
     .join('');
 
   gallery.insertAdjacentHTML('beforeend', markup);
-  loadMoreBtn.classList.remove(`is-inactive`);
-  loadMoreBtn.classList.add(`load-more`);
   loadMoreBtn.style.display = 'block';
   lightbox.refresh();
 };
@@ -88,10 +86,11 @@ const changeCurrentPage = () => {
   currentPage++; //Increses page counter
   restApi.fetchPictures(query, perPage, currentPage).then(pictures => {
     maxHits += pictures.hits.length;
+    console.log('pictures.totalHits: ', pictures.totalHits);
     if (maxHits >= pictures.totalHits) {
       loadMoreBtn.classList.remove(`load-more`);
       loadMoreBtn.classList.add(`is-inactive`);
-      return Notiflix.Notify.warning(
+      Notiflix.Notify.warning(
         `We're sorry, but you've reached the end of search results.`
       );
     }
