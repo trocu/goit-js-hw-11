@@ -1,6 +1,6 @@
 import Notiflix from 'notiflix';
 import { lightbox } from './js/gallery';
-import restApi from './js/fetchPictures';
+import fetchPictures from './js/fetchPictures';
 
 const searchBox = document.querySelector('.search-form');
 const { searchQuery } = searchBox.elements;
@@ -9,7 +9,7 @@ const loadMoreBtn = document.querySelector('.load-more');
 
 let currentPage; //Current page counter
 let perPage = 40; //Page image limit
-let maxHits; //Maximum images to fetch counter
+let hitsLimit; //Maximum images to fetch counter
 let query;
 
 loadMoreBtn.style.display = 'none';
@@ -22,14 +22,14 @@ const apiQuery = e => {
     return Notiflix.Notify.warning(`Please tell us what you are looking for!`);
   }
   currentPage = 1; //Start page counter
-  maxHits = 0; //Reset counter after new query
+  hitsLimit = 0; //Reset counter after new query
   gallery.innerHTML = ''; //Clear gallery after query
   loadMoreBtn.style.display = 'none'; //Hide button after query
   loadMoreBtn.classList.remove(`is-inactive`);
   loadMoreBtn.classList.add(`load-more`);
 
-  restApi.fetchPictures(query, perPage, currentPage).then(pictures => {
-    maxHits += pictures.hits.length; //Increases the counter with a new query
+  fetchPictures.restApi(query, perPage, currentPage).then(pictures => {
+    hitsLimit += pictures.hits.length; //Increases the counter with a new query
     if (!pictures.total) {
       return Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
@@ -84,9 +84,13 @@ const renderGallery = pictures => {
 //Fetches additional images after clicking the 'load more' button
 const changeCurrentPage = () => {
   currentPage++; //Increses page counter
-  restApi.fetchPictures(query, perPage, currentPage).then(pictures => {
-    maxHits += pictures.hits.length;
-    if (maxHits >= pictures.totalHits) {
+  /*
+  The counter increments after each page change, 
+  if hits reaches limit, disable the button, else render gallery
+  */
+  fetchPictures.restApi(query, perPage, currentPage).then(pictures => {
+    hitsLimit += pictures.hits.length;
+    if (hitsLimit >= pictures.totalHits) {
       loadMoreBtn.classList.remove(`load-more`);
       loadMoreBtn.classList.add(`is-inactive`);
       Notiflix.Notify.warning(
