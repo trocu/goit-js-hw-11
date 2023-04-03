@@ -6,7 +6,6 @@ const searchBox = document.querySelector('.search-form');
 const { searchQuery } = searchBox.elements;
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
-console.log('m');
 
 let currentPage; //Current page counter
 let perPage = 40; //Page image limit
